@@ -1,0 +1,105 @@
+-- INSERTAMOS DATOS EN NUEVA TABLA DE DIMENSIONES DE CLIENTE 
+-- DESDE UNA O MAS BBDD A LÑA BASE DE DATOS DE DWH 
+SELECT C.*, 
+U.DISTRITO, U.PROVINCIA, U.DEPARTAMENTO,
+A.ZONA, A.BANCA, A.AGENCIA AS NOMBRE_AGENCIA,
+S.DESC_SEGMENTO, S.GRUPO,
+X.DES_SEXO
+INTO [DWH_ProjectCubos_seguros].[dbo].CLIENTE
+
+FROM [BD_SEGUROS].[dbo].[BD_CLIENTE_SEGURO] AS C 
+LEFT JOIN [BD_SEGUROS].[dbo].[BD_UBIGEO] AS U
+	ON C.UBIGEO = U.UBIGEO 
+LEFT JOIN [BD_SEGUROS].[dbo].[BD_AGENCIAS] AS A
+	ON C.AGENCIA = A.COD_AGENCIA
+LEFT JOIN [BD_SEGUROS].[dbo].[BD_SEGMENTO] AS S
+	ON C.SEGMENTO = S.SEGMENTO
+LEFT JOIN [Project_trabajo_cubos].[dbo].[SEXO$] AS X
+	ON C.SEXO = X.COD_SEXO
+
+--	(1369783 rows affected)
+
+-- SELECT  COUNT(1)	FROM [BD_SEGUROS].[dbo].[BD_CLIENTE_SEGURO]
+--SELECT  COUNT(1)	FROM  [DWH_ProjectCubos_seguros].[dbo].[CLIENTE]
+
+
+SELECT * FROM [BD_SEGUROS].[dbo].[BD_UBIGEO]
+
+/*
+-- ALTERAR TABLA PARA SOLUCIUONAR ERROR 
+ALTER TABLE [BD_UBIGEO] ALTER COLUMN [UBIGEO]
+varchar(7) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL
+*/
+
+-- INSERTAMOS DATOS EN NUEVA TABLA DE DIMENSIONES DE DIVISA
+/*
+SELECT * FROM  [BD_SEGUROS].[dbo].[BD_TB_SEGURO] AS S
+LEFT JOIN [Project_trabajo_cubos].[dbo].[DIVISA] AS D
+	ON S.cd_divisa = D.CD_DIVISA
+
+
+ALTER TABLE [DIVISA] ALTER COLUMN [CD_DIVISA]
+varchar(3) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL
+
+ALTER TABLE [BD_TB_SEGURO] ALTER COLUMN  [cd_divisa]
+varchar(3)
+
+*/
+
+SELECT *
+INTO [DWH_ProjectCubos_seguros].[dbo].MONEDA
+FROM [Project_trabajo_cubos].[dbo].DIVISA
+
+
+-- INSERTAMOS DATOS EN NUEVA TABLA DE DIMENSIONES DE CANAL VENTAS 
+
+/*
+SELECT * FROM  [BD_SEGUROS].[dbo].[BD_TB_SEGURO] AS S
+LEFT JOIN [Project_trabajo_cubos].[dbo].[CANAL_VENTAS] AS V
+	ON S.cd_canal_venta = V.cd_canal_venta
+
+ALTER TABLE [CANAL_VENTAS] ALTER COLUMN [cd_canal_venta]
+varchar(2) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL
+
+ALTER TABLE [BD_TB_SEGURO] ALTER COLUMN  [cd_canal_venta]
+varchar(2)
+
+*/
+
+SELECT *
+INTO [DWH_ProjectCubos_seguros].[dbo].CANAL
+FROM [Project_trabajo_cubos].[dbo].[CANAL_VENTAS]
+
+-- INSERTAMOS DATOS EN NUEVA TABLA DE DIMENSIONES DE TIPO SEGURO
+/*
+SELECT * FROM  [BD_SEGUROS].[dbo].[BD_TB_SEGURO] AS S
+LEFT JOIN [Project_trabajo_cubos].[dbo].[TB_Tipo_seguro$] AS T
+	ON S.cd_subproducto = T.CODIGO
+
+ALTER TABLE [TB_Tipo_seguro$] ALTER COLUMN [CODIGO]
+varchar(4) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL
+
+ALTER TABLE [BD_TB_SEGURO] ALTER COLUMN [cd_subproducto]
+varchar(4)
+
+*/
+
+SELECT *
+INTO [DWH_ProjectCubos_seguros].[dbo].Tipo_seguro
+FROM [Project_trabajo_cubos].[dbo].[TB_Tipo_seguro$]
+
+-- INSERTAMOS DATOS EN NUEVA TABLA DE DIMENSIONES DE FECHA PROCESO
+/*
+SELECT * FROM  [BD_SEGUROS].[dbo].[BD_TB_SEGURO] AS S
+LEFT JOIN [Project_trabajo_cubos].[dbo].[Fecha_proceso$]  AS F
+	ON S.MES_ALTA = F.MES_PROCESO
+
+ALTER TABLE [Fecha_proceso$]  ALTER COLUMN [MES_PROCESO]
+varchar(6) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL
+
+
+*/
+
+SELECT *
+INTO [DWH_ProjectCubos_seguros].[dbo].Fecha_Proceso
+FROM	[Project_trabajo_cubos].[dbo].[Fecha_proceso$]
